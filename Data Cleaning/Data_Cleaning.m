@@ -1,7 +1,11 @@
 %%% Data_Cleaning %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Read 47 raw data files from the Raw_Data folder 
 %%% Clean using similar procedures to Gao et. al
-%%%  - Ages 96+are omitted
+%%%  - Ages 96+are omitted (unlike Gao et. al, who grouped these ages
+%%%  together)
+%%%  - Two .mat files are produced. mortality_rates is a table which
+%%%  contains additional information (year, age, prefecture names, etc) while
+%%%  mortality_rates_array is just the mortality rate data.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 max_age = 95 % ages 96+ are omitted
