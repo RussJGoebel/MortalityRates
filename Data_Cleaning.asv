@@ -1,0 +1,56 @@
+%%% Data_Cleaning %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Read 47 raw data files from the Raw_Data folder 
+%%% Clean using similar procedures to Gao et. al
+%%%  - Ages 95+ are grouped together
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+max_age = 95 % ages 95+ grouped together
+n_years = 45 % there are 45 total years of data
+starting_year = 1975 
+
+% Get files relative to project root folder ------------------------------
+proj = matlab.project.rootProject; %gets all wav files in struct
+raw_data_path = proj.RootFolder+"\Raw_Data";
+files = dir(raw_data_path)
+
+% initialize table and fill in Year and Age variables and first prefecture's data -
+
+mortality_rates = cell2table(cell(n_ages*n_years,0)) 
+first_file = 3 % we skip the first two files in the folder, '.' and '..'
+
+file_path = string(files(first_file).folder)+"\"+files(first_file).name;
+file_table = readtable(file_path);
+
+length(file_table.Female);
+
+year = file_table.Year(file_table.Age <= max_age)
+age =  file_table.Age(file_table.Age <= max_age)
+unique_year = unique(year)
+
+female_mortality_rate = zeros((max_age+1)*n_years,1)
+
+for j = 1:length(unique_year)
+    
+    less_than_max_age = (file_table.Age < max_age) & (file_table.Year == unique_year(j))
+    at_least_max_age = (file_table.Age > max_age) & (file_table.Year == unique_year(j))
+   
+    female_mortality_rate(((j-1)*(max_age+1)+1):j*(max_age+1)) = [file_table.Female(less_than_max_age);sum(file_table.Female(at_least_max_age))]
+    
+end 
+
+mortality_rates.Year = year
+mortality_rates.Age = year
+mortality_rates.(files(first_file).name(1:(end-4))) = [file_table.Female(1:(n_ages-1));sum(file_table.Female(n_ages:end),'omitnan')];
+
+% fill in remaining 46 prefectures of data -------------------------------
+for j = (first_file+1):length(files)   
+
+    file_path = string(files(j).folder)+"\"+files(j).name;
+    file_table = readtable(file_path);
+    
+    length(file_table.Female);
+    
+    mortality_rates.(files(j).name(1:(end-4))) = file_table.Female;
+    
+end
+
