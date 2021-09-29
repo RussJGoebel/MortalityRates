@@ -51,5 +51,5 @@ mortality_rates_array = mortality_rates{1:96,3:end}
 for j = 2:45
    mortality_rates_array(:,:,j) =   mortality_rates{((j-1)*96+1):j*96,3:end}
 end
-
+% format is {age,prefecture,year}
 %save('mortality_rates_array','mortality_rates_array')
